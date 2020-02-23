@@ -9,5 +9,12 @@ import timber.log.Timber
  */
 class BatmanX : Application() {
 
+    override fun onCreate() {
+        super.onCreate()
+
+        // Plant Timber logger in
+        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+
+    }
 
 }
