@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import io.omido.batmanx.util.interfaces.FragmentOnBackPressed
 
 abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : AppCompatActivity() {
 
@@ -49,6 +50,19 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : AppCompa
             .findFragmentById(navigationId)
             ?.childFragmentManager
             ?.primaryNavigationFragment
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        onBackPressed()
+        return true
+    }
+
+    override fun onBackPressed() {
+        val currentFragment = getCurrentFragment()
+        if (currentFragment !is FragmentOnBackPressed) super.onBackPressed()
+        (currentFragment as? FragmentOnBackPressed)?.onBackPressed()?.let {
+            if (it) super.onBackPressed()
+        }
     }
 
 }
