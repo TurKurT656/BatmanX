@@ -6,13 +6,17 @@ import io.omido.batmanx.data.network.interceptor.ApiKeyInterceptor
 import io.omido.batmanx.data.network.ExclusionStrategy
 import io.omido.batmanx.di.Qualifiers.API_KEY_INTERCEPTOR
 import io.omido.batmanx.di.Qualifiers.LOGGING_INTERCEPTOR
+import io.omido.batmanx.di.Qualifiers.NETWORK_CACHE_FILE
 import io.omido.batmanx.util.ktx.logD
+import okhttp3.Cache
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
+import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = "http://www.omdbapi.com/"
@@ -21,7 +25,18 @@ private const val BASE_URL = "http://www.omdbapi.com/"
 private const val TIMEOUT_DEBUG = 60L
 private const val TIMEOUT_RELEASE = 20L
 
+private const val CACHE_NAME = "network_cache"
+private const val CACHE_SIZE = 10 * 1024 * 1024L // 10MB
+
 val networkModule = module {
+
+    factory(NETWORK_CACHE_FILE) {
+        File(androidContext().cacheDir, CACHE_NAME).apply {
+            if (!exists()) mkdir()
+        }
+    }
+
+    factory { Cache(get(NETWORK_CACHE_FILE), CACHE_SIZE) }
 
     factory {
         GsonBuilder()
