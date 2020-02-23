@@ -39,13 +39,41 @@ abstract class BaseAdapter<T>(diffCallback: DiffUtil.ItemCallback<T>) :
 
     abstract override fun getItemViewType(position: Int): Int
 
-    inner class DataBindingViewHolder(private val binding: ViewDataBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    override fun onViewAttachedToWindow(holder: DataBindingViewHolder) {
+        super.onViewAttachedToWindow(holder)
+        holder.onAppear()
+    }
 
+    override fun onViewDetachedFromWindow(holder: DataBindingViewHolder) {
+        super.onViewDetachedFromWindow(holder)
+        holder.onDisappear()
+    }
+
+
+    inner class DataBindingViewHolder(private val binding: ViewDataBinding) :
+        RecyclerView.ViewHolder(binding.root), LifecycleOwner {
+
+        private val lifecycleRegistry = LifecycleRegistry(this)
+
+        init {
+            lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        }
+
+        fun onAppear() {
+            lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        }
+
+        fun onDisappear() {
+            lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        }
+
+        override fun getLifecycle(): Lifecycle {
+            return lifecycleRegistry
+        }
 
         fun bind(item: T) {
             binding.apply {
-
+                lifecycleOwner = this@DataBindingViewHolder
                 setVariable(BR.item, item)
                 executePendingBindings()
                 root.apply {
