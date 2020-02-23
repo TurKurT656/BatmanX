@@ -1,8 +1,9 @@
 package io.omido.batmanx.di.module
 
+import com.google.gson.GsonBuilder
 import io.omido.batmanx.BuildConfig
 import io.omido.batmanx.data.network.interceptor.ApiKeyInterceptor
-import io.omido.batmanx.di.Qualifiers
+import io.omido.batmanx.data.network.ExclusionStrategy
 import io.omido.batmanx.di.Qualifiers.API_KEY_INTERCEPTOR
 import io.omido.batmanx.di.Qualifiers.LOGGING_INTERCEPTOR
 import io.omido.batmanx.util.ktx.logD
@@ -12,7 +13,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 private const val BASE_URL = "http://www.omdbapi.com/"
@@ -22,6 +22,12 @@ private const val TIMEOUT_DEBUG = 60L
 private const val TIMEOUT_RELEASE = 20L
 
 val networkModule = module {
+
+    factory {
+        GsonBuilder()
+            .setExclusionStrategies(ExclusionStrategy)
+            .create()
+    }
 
     single<Interceptor>(LOGGING_INTERCEPTOR) {
         HttpLoggingInterceptor(
