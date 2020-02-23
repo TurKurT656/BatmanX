@@ -12,7 +12,7 @@ abstract class BaseAndroidViewModel(
     application: Application
 ) : BaseViewModel() {
 
-    val batmanXApp = application as BatmanX
+    val batmanXApp = application as BatmanXApp
 
     protected fun getString(@StringRes stringRes: Int, vararg formatArgs: Any?): String {
         return batmanXApp.resources.getString(stringRes, *formatArgs)

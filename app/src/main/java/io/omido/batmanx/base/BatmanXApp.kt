@@ -11,7 +11,7 @@ import timber.log.Timber
 /**
  * Custom application class
  */
-class BatmanX : Application() {
+class BatmanXApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -21,7 +21,7 @@ class BatmanX : Application() {
 
         // Initialize Koin DI
         startKoin {
-            androidContext(this@BatmanX)
+            androidContext(this@BatmanXApp)
             androidLogger(Level.DEBUG)
             modules(
                 // List of modules goes here
