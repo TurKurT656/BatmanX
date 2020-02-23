@@ -3,6 +3,7 @@
     <words>
       <w>coroutines</w>
       <w>koin</w>
+      <w>okhttp</w>
     </words>
   </dictionary>
 </component>
