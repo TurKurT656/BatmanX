@@ -1,6 +1,9 @@
 package io.omido.batmanx.di.module
 
 import io.omido.batmanx.BuildConfig
+import io.omido.batmanx.data.network.interceptor.ApiKeyInterceptor
+import io.omido.batmanx.di.Qualifiers
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.koin.dsl.module
 import retrofit2.Retrofit
@@ -15,8 +18,13 @@ private const val TIMEOUT_RELEASE = 20L
 
 val networkModule = module {
 
+    single<Interceptor>(Qualifiers.API_KEY_INTERCEPTOR) {
+        ApiKeyInterceptor()
+    }
+
     single {
         OkHttpClient.Builder().apply {
+            addInterceptor(get<Interceptor>(Qualifiers.API_KEY_INTERCEPTOR))
             cache(get())
             val timeout = if (BuildConfig.DEBUG) TIMEOUT_DEBUG else TIMEOUT_RELEASE
             readTimeout(timeout, TimeUnit.SECONDS)
