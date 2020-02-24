@@ -67,7 +67,7 @@ val networkModule = module {
     }
 
     single<Interceptor>(API_KEY_INTERCEPTOR) {
-        ApiKeyInterceptor()
+        ApiKeyInterceptor
     }
 
     single {
