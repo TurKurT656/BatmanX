@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.observe
+import io.omido.batmanx.data.network.ConnectionLiveData
 import io.omido.batmanx.util.interfaces.FragmentOnBackPressed
 
 abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : AppCompatActivity() {
@@ -23,7 +25,15 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : AppCompa
         super.onCreate(savedInstanceState)
         initBinding()
         bindObservables()
+        checkInternetConnection()
         oneTimeEvent()
+    }
+
+    private fun checkInternetConnection() {
+        ConnectionLiveData.observe(this) { isConnected ->
+            onNetworkStateChanged(isConnected)
+        }
+
     }
 
     override fun onStart() {
@@ -45,11 +55,13 @@ abstract class BaseActivity<VM : BaseViewModel, DB : ViewDataBinding> : AppCompa
 
     open fun everyTimeEvent() {}
 
+    open fun onNetworkStateChanged(isConnected: Boolean) {}
+
     fun getCurrentFragment(): Fragment? {
         return supportFragmentManager
-            .findFragmentById(navigationId)
-            ?.childFragmentManager
-            ?.primaryNavigationFragment
+                .findFragmentById(navigationId)
+                ?.childFragmentManager
+                ?.primaryNavigationFragment
     }
 
     override fun onSupportNavigateUp(): Boolean {

@@ -2,6 +2,7 @@ package io.omido.batmanx.base
 
 import android.app.Application
 import io.omido.batmanx.BuildConfig
+import io.omido.batmanx.data.network.ConnectionLiveData
 import io.omido.batmanx.di.module.*
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
@@ -31,6 +32,8 @@ class BatmanXApp : Application() {
             )
         }
 
+        // Init network connectivity detector
+        ConnectionLiveData.init(this)
 
     }
 
