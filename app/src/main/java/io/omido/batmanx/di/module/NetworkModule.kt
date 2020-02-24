@@ -5,10 +5,12 @@ import io.omido.batmanx.BuildConfig
 import io.omido.batmanx.data.network.interceptor.ApiKeyInterceptor
 import io.omido.batmanx.data.network.ExclusionStrategy
 import io.omido.batmanx.data.network.interceptor.CacheInterceptor
+import io.omido.batmanx.data.network.interceptor.OfflineCacheInterceptor
 import io.omido.batmanx.di.Qualifiers.API_KEY_INTERCEPTOR
 import io.omido.batmanx.di.Qualifiers.CACHE_INTERCEPTOR
 import io.omido.batmanx.di.Qualifiers.LOGGING_INTERCEPTOR
 import io.omido.batmanx.di.Qualifiers.NETWORK_CACHE_FILE
+import io.omido.batmanx.di.Qualifiers.OFFLINE_CACHE_INTERCEPTOR
 import io.omido.batmanx.util.ktx.logD
 import okhttp3.Cache
 import okhttp3.Interceptor
@@ -46,6 +48,10 @@ val networkModule = module {
             .create()
     }
 
+    single<Interceptor>(OFFLINE_CACHE_INTERCEPTOR) {
+        OfflineCacheInterceptor
+    }
+
     single<Interceptor>(CACHE_INTERCEPTOR) {
         CacheInterceptor
     }
@@ -75,6 +81,7 @@ val networkModule = module {
         OkHttpClient.Builder().apply {
             addInterceptor(get<Interceptor>(API_KEY_INTERCEPTOR))
             addInterceptor(get<Interceptor>(CACHE_INTERCEPTOR))
+            addInterceptor(get<Interceptor>(OFFLINE_CACHE_INTERCEPTOR))
             addInterceptor(get<Interceptor>(LOGGING_INTERCEPTOR))
             cache(get())
             val timeout = if (BuildConfig.DEBUG) TIMEOUT_DEBUG else TIMEOUT_RELEASE
