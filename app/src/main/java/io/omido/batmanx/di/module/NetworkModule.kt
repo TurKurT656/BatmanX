@@ -4,6 +4,7 @@ import com.google.gson.GsonBuilder
 import io.omido.batmanx.BuildConfig
 import io.omido.batmanx.data.network.interceptor.ApiKeyInterceptor
 import io.omido.batmanx.data.network.ExclusionStrategy
+import io.omido.batmanx.data.network.interceptor.CacheInterceptor
 import io.omido.batmanx.di.Qualifiers.API_KEY_INTERCEPTOR
 import io.omido.batmanx.di.Qualifiers.LOGGING_INTERCEPTOR
 import io.omido.batmanx.di.Qualifiers.NETWORK_CACHE_FILE
@@ -42,6 +43,10 @@ val networkModule = module {
         GsonBuilder()
             .setExclusionStrategies(ExclusionStrategy)
             .create()
+    }
+
+    single<Interceptor> {
+        CacheInterceptor
     }
 
     single<Interceptor>(LOGGING_INTERCEPTOR) {
